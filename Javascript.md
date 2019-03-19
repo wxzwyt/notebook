@@ -41,3 +41,7 @@
 5. 可自由给对象添加 (`xiaoming.age;  xiaoming.age=18;`) 或删除 (`delete`) 属性  
 6. 检测对象是否拥有某一属性,用`in` (`'name' in xiaoming;  // true`) , `in` 判断一个属性存在,这个属性可能是继承的属性  
 7. 用 `hasOwnProperty()` 判断属性是否是继承得到的  
+### 条件判断  
+1. `if () {...} else {...}`  
+2. JavaScript把`null`、`undefined`、`0`、`NaN`和空字符串`''`视为`false`，其他值一概视为`true`  
+
