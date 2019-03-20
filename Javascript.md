@@ -45,4 +45,80 @@
 ### 条件判断  
 1. `if () {...} else {...}`  
 2. JavaScript把`null`、`undefined`、`0`、`NaN`和空字符串`''`视为`false`，其他值一概视为`true`  
+### 循环  
+1. `for`  
+2. `for ... in` `for (var key in o) {...}`  
+3. `for ... in` 可以直接循环出`Array`的索引,得到的是`String`  
+4. `while`  
+5. `do { ... } while()` (循环至少执行1次,而`for`和`while`可能一次都不执行)  
+### Map&Set  
+#### Map  
+1. `{}`可视为其他语言中的`Map`或`Dictionary`(一对键值对),但键必须是字符串  
+2. `var m = new Map([['Michael', 95], ['Bob', 75], ['Tracy', 85]]);`或
+```
+    var m = new Map(); // 空Map
+    m.set('Adam', 67); // 添加新的key-value
+    m.set('Bob', 59);
+```  
+3. 一个`key`只能对应一个`value`, 给`key`赋多个值时, 后面的值会把前面的冲掉  
+#### Set  
+1. `set`和`map`类似,是一组key的集合  
+2. `add()`  
+3. `delete()`  
+### iterable  
+1. `Array` `Map` `Set`都属于`iterable`类型, 此类型可以通过`for ... of`循环来遍历  
+2. `for ... of`只循环集合本身的元素  
+3. `forEach()`,`Set`没索引,回调函数的前两个参数是其本身
+    ```
+        var s = new Set(['A', 'B', 'C']);
+        s.forEach(function (element, sameElement, set) {
+        console.log(element);
+        });
+    ```  
+    `Map`回调函数参数为`value` `key` `map`  
+    ```
+        var m = new Map([[1, 'x'], [2, 'y'], [3, 'z']]);
+        m.forEach(function (value, key, map) {
+        console.log(value);
+        });
+    ```  
+4. 对某些参数不感兴趣,JavaScript的函数调用不要求参数必须一致  
+## 函数  
+### 函数定义和调用  
+1. 定义:  
+```
+function abs(x) {
+    if (x >= 0) {
+        return x;
+    } else {
+        return -x;
+    }
+}
+```  
+2. 函数如果无`return`语句,返回`undefined`  
+3. JavaScript的函数也是一个对象,第二种定义方式:  
+```
+    var abs = function (x) {
+        if (x >= 0) {
+            return x;
+        } else {
+            return -x;
+        }
+    };
+```
+结尾需要加`;`
+#### 调用函数  
+1. 按顺序传入参数
+2. 传入多个参数也不影响调用结果  
+3. 传入的参数少也没问题
+#### *!*arguments
+1. 只在函数内部起作用，并且永远指向当前函数的调用者传入的所有参数
+#### rest
+1. `function foo(a,b, ...rest) {...}`, `rest`只能写在最后, 前面用`...`标识
+### 变量作用域与解构赋值
+1. 不同函数内的同一变量互不影响
+2. 内层函数可以访问外层函数定义的变量,反过来则不行
+#### 变量提升
+
+
 
