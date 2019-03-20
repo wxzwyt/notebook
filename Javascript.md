@@ -1,4 +1,5 @@
-#  Javascript
+#  Javascript  
+## 快速入门
 ### 基本语法
 1. 使用 `===` 不使用 `==`  
 2. `NaN`不等于任何值,包括本身( `Not a Number` )  
