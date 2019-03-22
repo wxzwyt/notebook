@@ -185,7 +185,31 @@ function abs(x) {
 #### sort
 1. `sort()`先转换为`String`, 再进行排序
 2. `sort()`是高阶函数, 可接收一个比较函数来实现自定义排序 
-### 闭包
+### *!*闭包
+1. eg:  
+```
+    function lazy_sum(arr) {
+        var sum = function () {
+            return arr.reduce(function (x, y) {
+                return x + y;
+            });
+        }
+        return sum;
+    }
+```  
+调用`lazy_sum()`返回求和函数, 调用`f()`时, 返回结果.  
+2. 每次调用都会返回一个新的函数, 返回函数不要引用任何循环变量, 或后续会发生变化的变量  
+3. *!* **匿名函数**  
+    `(function (x) { return x * x }) (3)`  
+4. 可实现私有变量
+### 箭头函数
+1. `x => x * x`相当于`function (x) { return x * x }`, 相当于匿名函数  
+2. 箭头函数完全修复了this的指向, this总是指向词法作用域
+### generator
+1. 一边循环一边计算
+2. `function*`还可以用`return`或`yield`
+3. `for ... of`循环迭代generator对象, 不需自己判断`done`  
+
 
 
 
