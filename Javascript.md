@@ -168,14 +168,24 @@ function abs(x) {
 4. `call()`与`apply()`类似, `apply()`将参数打包成`Array`再传入, `call()`把参数按顺序传入
 5. 对于普通函数调用,通常把`this`绑定为`null`
 6. *!*装饰器
-### 高阶函数
+### 高阶函数 (Array)
 1. 编写高阶函数,就是让函数的参数能够接收别的函数
 ```
     function add(x, y, f) {
         return f(x) + f(y);
     }
     var x = add(-5, 6, Math.abs); // 11
-```
+```  
+#### map/reduce
+1. `Array.map()`, 传入参数为函数对象本身
+2. `Array.map()`, 把结果继续和序列的下一个元素做累积计算
+#### filter (筛选/过滤)
+1. `filter()`把传入的函数依次作用于每个元素, 再根据返回值`true or false`来决定是否保留该元素
+2. 接收的回调函数可以有多个参数, 通常只使用第一个参数`element`(Array的某个元素), 还可以接收另外两个参数(index, self)
+#### sort
+1. `sort()`先转换为`String`, 再进行排序
+2. `sort()`是高阶函数, 可接收一个比较函数来实现自定义排序 
+### 闭包
 
 
 
