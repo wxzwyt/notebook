@@ -55,4 +55,23 @@
     <bean id="bean2" class="..."/>
 </beans>
 ```
-15. 
+15. `.groovy` equivalent to XML bean definitions, supports Spring's XML configuration namespaces, allows for importing XML bean definition files through an `importBeans` directive
+16. `ApplicationContext` interface for a factory of different beans and dependencies
+17. By using the method `T getBean(String name, Class<T> requiredType)`, retrieve instances of beans.
+18. `ApplicationContext` read bean definitions and access them
+19. `ApplicationContext`
+```
+ApplicationContext context = new ClassPathXmlApplicationContext("services.xml", "daos.xml");
+ApplicationContext context = new GenericGroovyApplicationContext("services.groovy", "daos.groovy");
+```
+20. `GenericApplicationContext`
+```
+GenericApplicationContext context = new GenericApplicationContext();
+new XmlBeanDefinitionReader(context).loadBeanDefinitions("services.xml", "daos.xml");
+context.refresh();
+
+GenericApplicationContext context = new GenericApplicationContext();
+new GroovyBeanDefinitionReader(context).loadBeanDefinitions("services.groovy", "daos.groovy");
+context.refresh();
+```
+21. 
