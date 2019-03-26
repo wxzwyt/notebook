@@ -209,7 +209,79 @@ function abs(x) {
 1. 一边循环一边计算
 2. `function*`还可以用`return`或`yield`
 3. `for ... of`循环迭代generator对象, 不需自己判断`done`  
-
-
-
+## 标准对象
+1. 不使用`new Number()`, `new Boolean()`, `new String()`创建包装对象
+2. 用`parseInt()`或`parseFloat()`来转换任意类型到`number`
+3. 用`String()`来转换任意类型到`string`, 或直接调用某个对象的`toString()`方法
+4. 通常不必把任意类型转换为`boolean`再判断, 可直接写`if (myVar) {...}`
+5. `typeof`操作符可以判断`number`, `boolean`, `string`, `function`, `undefined`
+6. 判断`Array`使用`Array.isArray(arr)`
+7. 判断`null`使用`myVar === null`
+8. 判断某个全局变量是否存在用`typeof window.myVar === 'undefined'`
+9. 函数内部判断某个变量是否存在用`typeof myVar === 'undefined'`
+### Date
+1. `Date`对象用来表示日期和时间, eg:  
+```
+var now = new Date();
+now; // Wed Jun 24 2015 19:49:22 GMT+0800 (CST)
+now.getFullYear(); // 2015, 年份
+now.getMonth(); // 5, 月份，注意月份范围是0~11，5表示六月
+now.getDate(); // 24, 表示24号
+now.getDay(); // 3, 表示星期三
+now.getHours(); // 19, 24小时制
+now.getMinutes(); // 49, 分钟
+now.getSeconds(); // 22, 秒
+now.getMilliseconds(); // 875, 毫秒数
+now.getTime(); // 1435146562875, 以number形式表示的时间戳
+```
+2. JavaScript的`Date`对象月份值从0开始，牢记0=1月，1=2月，2=3月，……，11=12月。 
+3. `Date.parse()`返回时间戳, 传入的字符串使用实际月份01~12, eg:  
+```
+var d = Date.parse('2015-06-24T19:49:22.875+08:00');
+d; // 1435146562875
+```
+4. 将时间戳转换为`Date`, 转换为`Date`后`getMonth()`获取月份值为0~11, eg:  
+```
+var d = new Date(1435146562875);
+d; // Wed Jun 24 2015 19:49:22 GMT+0800 (CST)
+d.getMonth(); // 5
+```
+5. `Date`对象表示的时间总是按浏览器所在时区显示的,使用`toLocalString()`显示本地时间, `使用toUTCString()`显示UTC时间
+### RegExp(正则表达式)(`\`表示转义)
+1. `\d`可以匹配一个数字, `\w`可以匹配一个字母或数字, `.`可以匹配任意字符, `\s`可以匹配一个空格(Tab也算)
+2. `*`表示任意个字符, `+`表示至少一个字符, `?`表示0或1个字符, `{n}`表示n个字符, `{n,m}`表示n-m个字符
+3. [0-9a-zA-Z\_]可以匹配一个数字、字母或者下划线
+4. [0-9a-zA-Z\_]+可以匹配至少由一个数字、字母或者下划线组成的字符串
+5. [a-zA-Z\_\$][0-9a-zA-Z\_\$]*可以匹配由字母或下划线、$开头，后接任意个由一个数字、字母或者下划线、$组成的字符串，也就是**JavaScript允许的变量名**
+6. [a-zA-Z\_\$][0-9a-zA-Z\_\$]{0, 19}更精确地限制了变量的长度是1-20个字符（前面1个字符+后面最多19个字符）
+7. `A|B`可以匹配A或B, `^`表示行的开头, `$`表示行的结束, eg: `^\d`表示必须以数字开头, `\d$`表示必须以数字结束
+8. js创建正则表达式, `/正则表达式/`或`new RegExp('正则表达式')`, eg:  
+```
+var re1 = /ABC\-001/;
+var re2 = new RegExp('ABC\\-001');
+```
+9. `test()`方法测试给定的字符串是否符合条件
+10. 正常切分代码无法识别连续的字符串, 使用正则表达式则可以, eg:
+```
+'a b   c'.split(/\s+/); // ['a', 'b', 'c']
+'a,b;; c  d'.split(/[\s\,\;]+/); // ['a', 'b', 'c', 'd']
+```
+11. 可以提取子串, 用`()`表示要提取的分组, 正则表达式定义了组,则可使用`exec()`方法提取出子串来, 匹配成功后, 返回一个`Array`, 第一个元素为整个字符串, 后面元素为匹配成功的子串
+12. 正则匹配默认是贪婪匹配, 组的末尾加`?`即可实现非贪婪匹配
+13. `g`表示全局匹配, 可多次执行`exec()`方法来搜索一个匹配的字符串, 可指定`i`标志, 表示忽略大小写, `m`标志, 表示执行多行匹配
+### JSON
+1. JSON序列化输出`JSON.stringify()`, 第一个参数为对象名, 第二个参数用于控制如何筛选对象的键值(指定输出属性,传入`Array []`), 第二个参数还可以传入一个函数, 这样每个键值对都会被函数先处理, eg:  
+```
+JSON.stringify(xiaoming, ['name', 'skills'], '  ');
+```
+2. 精确控制序列化, 可定义一个`toJSON()`方法, 直接返回JSON应该序列化的数据, eg:  
+```
+toJSON: function () {
+        return { // 只输出name和age，并且改变了key：
+            'Name': this.name,
+            'Age': this.age
+        };
+    }
+```
+3. JSON格式的字符串,直接使用`JSON.parse()`将其变成JS对象, 还可以接收一个函数, 用来转换解析出的属性
 
