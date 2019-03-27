@@ -1,4 +1,5 @@
-# IOC
+[ spring ](https://docs.spring.io/spring/docs/5.1.5.RELEASE/spring-framework-reference/core.html#spring-core)
+## IOC
 1. `org.springframework.beans`, `org.springframework.context` are the basis
 2. `BeanFactory` provides an advanced configuration mechanism capable of managing any type of object.  
 `ApplicationContext` is a sub-interface of BeanFactory.
@@ -74,4 +75,10 @@ GenericApplicationContext context = new GenericApplicationContext();
 new GroovyBeanDefinitionReader(context).loadBeanDefinitions("services.groovy", "daos.groovy");
 context.refresh();
 ```
-21. 
+21. `BeanDefinition` contain the following metadata:  
+    - package-qualified class name: the actual implementation class of the bean being defined.
+    - bean behavioral configuration elements
+    - references to other beans that are needed for the bean to do its work(collaborators or dependencies)
+    - other configuration settings to set in the newly created project
+22. `ApplicationContext` permit the registration of existing objects that are created outside the container (by user), by `getBeanFactory()` method, which returns the BeanFactory `DefaultListableBeanFactory`
+23. `DefaultListableFactory` supports registration through the `registerSingleton()` and `registerBeanDefinition()` methods
