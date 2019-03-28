@@ -284,4 +284,69 @@ toJSON: function () {
     }
 ```
 3. JSON格式的字符串,直接使用`JSON.parse()`将其变成JS对象, 还可以接收一个函数, 用来转换解析出的属性
+## 面向对象编程
+1. 通过原型(prototype)而不是类和实例来实现面向对象编程
+2. eg:
+```
+var Student = {
+    name: 'Robot',
+    height: 1.2,
+    run: function () {
+        console.log(this.name + ' is running...');
+    }
+};
+
+var xiaoming = {
+    name: '小明'
+};
+
+xiaoming.__proto__ = Student;
+```
+3. **不要直接使用`obj.__proto__`去改变一个对象的原型**
+4. 普通函数加`new`变成构造函数, 构造函数绑定的`this`指向新创建的对象, 并默认返回`this`(不需要在最后写`return this;`)
+5. 使用`new Student()`创建的对象还从原型上获取了一个`constructor`属性, 指向函数`Student`本身
+6. **构造函数首字母大写, 普通函数首字母小写**
+7. 可编写`createStudent()`函数, 在内部封装所有的`new`操作, 其优点:
+    - 不需要`new`来调用  
+    - 参数非常灵活(可直接用JSON创建一个对象)
+### 原型继承
+原型继承的实现方式:
+ - 定义新的构造函数, 并在内部用`call()`调用希望继承的构造函数, 并绑定`this`
+ - 借助中间函数`F`事项原型链继承, 最好通过封装的`inherits`函数来完成
+ - 继续在新的构造函数的原型上定义新方法
+### class继承
+`class` `extends`
+## 浏览器
+### 浏览器对象
+1. `window` 不仅充当全局作用域,还表示浏览器窗口
+    - 有`innerWidth`和`innerHeight`属性, 可以获取浏览器窗口的内部宽度和高度
+    - 还有`outerWidth`和`outerHeight`属性, 可以获取浏览器窗口的整个宽高
+2. `navigator` 浏览器的信息, (**信息可以很容易地被用户修改**) 常用属性:  
+    - `navigator.appName`: 浏览器名称
+    - `appVersion`: 浏览器版本
+    - `language`: 设置的语言
+    - `platform`: 操作系统类型
+    - `userAgent`: 浏览器设定的`User-Agent`字符串
+3. `screen` 屏幕的信息  
+    - `screen.width`: 屏幕宽度(以像素为单位)
+    - `screen.height`: 屏幕高度
+    - 'colorDepth': 返回颜色位数
+4. `location` 当前页面的URL信息  
+    - `location.href`: 获取完整的URL
+    -   ```
+        location.protocol; // 'http'  
+        location.host; // 'www.example.com'  
+        location.port; // '8080'  
+        location.pathname; // '/path/index.html'  
+        location.search; // '?a=1&b=2'  
+        location.hash; // 'TOP'  
+        ```
+    - `location.assign()`: 加载一个新页面
+    - `location.reload()`: 重载当前页面
+5. `document` 当前页面, `document`是整个DOM树的根节点  
+    - `title`: 从HTML文档中的`<title>xxx</title>`读取的, 也可以动态改变
+    - `getElementById()`和`getElementByTagName()`可按ID获得一个DOM节点和按Tag名称获得一组DOM节点
+    - `cookie`: 获取当前页面的Cookie(设定`httpOnly`的Cookie将不能被JavaScript读取)
+6. `history` 保存浏览器的历史记录(**应该废弃**)
+    - `back()`或`forward()`, 相当于用户点击了浏览器的"后退"或"前进"按钮
 
