@@ -345,8 +345,18 @@ xiaoming.__proto__ = Student;
     - `location.reload()`: 重载当前页面
 5. `document` 当前页面, `document`是整个DOM树的根节点  
     - `title`: 从HTML文档中的`<title>xxx</title>`读取的, 也可以动态改变
-    - `getElementById()`和`getElementByTagName()`可按ID获得一个DOM节点和按Tag名称获得一组DOM节点
+    - `getElementById()`和`getElementsByTagName()`可按ID获得一个DOM节点和按Tag名称获得一组DOM节点
     - `cookie`: 获取当前页面的Cookie(设定`httpOnly`的Cookie将不能被JavaScript读取)
 6. `history` 保存浏览器的历史记录(**应该废弃**)
     - `back()`或`forward()`, 相当于用户点击了浏览器的"后退"或"前进"按钮
+### 操作DOM
+1. DOM是一个树形结构, 有以下几个操作:  
+    - 更新: 更新该DOM节点的内容
+    - 遍历: 遍历该DOM节点下的子节点
+    - 添加: 在该DOM节点下新增一个子节点
+    - 删除: 将该节点从HTML中删除
+2. 拿节点:
+    - `getElementById()`, `getElementsByTagName()`, `getElementsByClassName()`
+    - `querySelector()`, `querySelectorAll()`
+3. 
 
