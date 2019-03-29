@@ -358,5 +358,116 @@ xiaoming.__proto__ = Student;
 2. 拿节点:
     - `getElementById()`, `getElementsByTagName()`, `getElementsByClassName()`
     - `querySelector()`, `querySelectorAll()`
-3. 
+#### 更新DOM
+1. 修改节点的文本:
+    - 修改`innerHTML`属性(不但可以修改一个DOM节点的文本内容, 还可以直接通过HTML片段修改DOM节点内部的子树), eg:  
+    ```
+        // 获取<p id="p-id">...</p>
+        var p = document.getElementById('p-id');
+        // 设置文本为abc:
+        p.innerHTML = 'ABC'; // <p id="p-id">ABC</p>
+        // 设置HTML:
+        p.innerHTML = 'ABC <span style="color:red">RED</span> XYZ';
+        // <p>...</p>的内部结构已修改
+    ```
+    - 修改`innerText`或`textContent`属性(在读取属性时, `innerText`不返回隐藏元素的文本, `textContent`返回所有文本), eg:  
+    ```
+        // 获取<p id="p-id">...</p>
+        var p = document.getElementById('p-id');
+        // 设置文本:
+        p.innerText = '<script>alert("Hi")</script>';
+        // HTML被自动编码，无法设置一个<script>节点:
+        // <p id="p-id">&lt;script&gt;alert("Hi")&lt;/script&gt;</p>
+    ```
+    - CSS中的`font-size`在JavaScript中为`fontSize`
+#### 插入DOM
+1. 如果DOM节点是空的, 可以直接用`innerHTML = '<span>child</span>'`即可修改DOM节点, (不为空则不能这么做,那样`innerHTML`会替换掉原来的所有子节点)
+2. `appendChild` 将一个子节点添加到父节点的最后一个子节点(多数时候从零创建一个新的节点,然后插入到指定位置), eg:  
+    ```
+        var
+            list = document.getElementById('list'),
+            haskell = document.createElement('p');
+        haskell.id = 'haskell';
+        haskell.innerText = 'Haskell';
+        list.appendChild(haskell)
+    ```
+3. `insertBefore`, `parentElement.insertBefore(newElement, referenceElement);`, 子节点会插入到`referenceElement`之前(重点是拿到"参考子节点"的引用, 通常循环一个父节点的所有子节点, 可以通过迭代`children`属性实现), eg:
+    ```
+        var
+            list = document.getElementById('list'),
+            ref = document.getElementById('python'),
+            haskell = document.createElement('p');
+        haskell.id = 'haskell';
+        haskell.innerText = 'Haskell';
+        list.insertBefore(haskell, ref);
+    ```
+#### 删除DOM
+1. 首先获得该节点本身和其父节点, 再调用父节点的`removeChild`把自己删掉
+2. `children`属性是一个只读属性, 随时在变化
+### 操作表单
+1. HTML表单的输入控件:  
+    - 文本框(`<input type="text">`)
+    - 口令框(`<input type="password">`)
+    - 单选框(`<input type="radio">`)
+    - 复选框(`<input type="checkbox">`)
+    - 下拉框(`<select>`)
+    - 隐藏文本(`<input type="hiden">`)
+2. 获取了`<input>`节点的引用, 就可直接调用`value`获取对应的用户输入值, eg:  
+    ```
+        // <input type="text" id="email">
+        var input = document.getElementById('email');
+        input.value; // '用户输入的值'
+    ```
+    可应用于`text`, `password`, `hidden`, `select`
+3. 对于单选框和复选框, `value`属性返回HTML预设的值, 使用`checked`判断是否勾选上了
+4. `text`, `password`, `hidden`, `select`可以直接设置`value`
+5. 单选框和复选框, 设置`checked`为`true`或`false`
+6. 通过`<form>`元素的`submit()`方法提交表单(扰乱了浏览器对form的正常提交)
+7. 响应`<form>`的`onsubmit`事件, 在提交form时作修改, eg:  
+    ```
+        <!-- HTML -->
+        <form id="test-form" onsubmit="return checkForm()">
+        <input type="text" name="test">
+        <button type="submit">Submit</button>
+        </form>
 
+        <script>
+        function checkForm() {
+            var form = document.getElementById('test-form');
+            // 可以在此修改form的input...
+            // 继续下一步:
+        return true;
+        }
+        </script>
+    ```
+    `return true`来告诉浏览器继续提交
+8. 在检查和修改`<input>`时, 充分利用`<input type="hidden">`来传递数据
+### 操作文件
+1. 上传文件时, JS仅在提交表单时对文件扩展名做检查,防止用户上传无效格式的文件
+2. JS是单线程执行模式, 执行多任务实际上是异步调用
+### AJAX
+1. 写AJAX主要依靠`XMLHttpRequest`对象
+2. 当创建了`XMLHttpRequest`对象后，要先设置`onreadystatechange`的回调函数。在回调函数中，通常我们只需通过`readyState === 4`判断请求是否完成，如果已完成，再根据`status === 200`判断是否是一个成功的响应
+3. `XMLHttpRequest`对象的`open()`方法有3个参数，第一个参数指定是GET还是POST，第二个参数指定URL地址，第三个参数指定是否使用异步，默认是true
+4. [AJAX](https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000/001434499861493e7c35be5e0864769a2c06afb4754acc6000)
+5. JS发送AJAX请求时, URL的域名必须和当前页面完全一致
+6. JS请求外域方法:  
+    - 通过Flash插件发送HTTP请求(可绕过浏览器的安全限制)
+    - 通过在同源域名下架设一个代理服务器来转发, js负责把请求发送到代理服务器, 代理服务器再把结果返回
+    - JSONP, 只能用GET请求, 并要求返回JS, 通常以函数调用的形式返回
+### *!*Promise
+## JQuery
+1. JQuery解决的问题:  
+    - 消除浏览器差异
+    - 间接的操作DOM的方法
+    - 轻松实现动画, 修改CSS等操作
+2. 使用JQuery, 只需在页面的`<head>`引入JQuery文件即可, eg:  
+    ```
+    <head>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    ...
+    </head>
+    ```
+3. $
+### 选择器
+1. `$('#dom-id')`
