@@ -470,4 +470,239 @@ xiaoming.__proto__ = Student;
     ```
 3. $
 ### 选择器
-1. `$('#dom-id')`
+1. 按ID查找`$('#id')`, eg:  
+    ```
+        // 查找<div id="abc">:
+        var div = $('#abc');
+        [<div id="abc">...</div>] //存在
+        [] //不存在
+    ``` 
+2. 按tag查找, eg:  
+    ```
+        var ps = $('p'); // 返回所有<p>节点
+        ps.length; // 数一数页面有多少个<p>节点
+    ```
+3. 按class查找`$('.class')`, eg:  
+    ```
+        var a = $('.red'); // 所有节点包含`class="red"`都将返回
+        // 例如:
+        // <div class="red">...</div>
+        // <p class="green red">...</p>
+        var a = $('.red.green'); // 注意没有空格！
+        // 符合条件的节点：
+        // <div class="red green">...</div>
+        // <div class="blue green red">...</div>
+    ```
+4. 按属性查找`$('[..=..]')`, eg:  
+    ```
+        var email = $('[name=email]'); // 找出<??? name="email">
+        var passwordInput = $('[type=password]'); // 找出<??? type="password">
+        var a = $('[items="A B"]'); // 找出<??? items="A B">
+    ```  
+    按前缀^`$('[name^=icon]')`或后缀$查找`$('[name$=icon]')`, eg:  
+    ```
+        var icons = $('[name^=icon]'); // 找出所有name属性值以icon开头的DOM
+        // 例如: name="icon-1", name="icon-2"
+        var names = $('[name$=with]'); // 找出所有name属性值以with结尾的DOM
+        // 例如: name="startswith", name="endswith"
+    ```  
+    eg: 
+    ```
+        var icons = $('[class^="icon-"]'); // 找出所有class包含至少一个以`icon-`开头的DOM
+        // 例如: class="icon-clock", class="abc icon-home"
+
+    ```
+5. 组合查找, eg:  
+    ```
+        var emailInput = $('input[name=email]'); // 不会找出<div name="email">
+        var tr = $('tr.red'); // 找出<tr class="red ...">...</tr>
+    ```
+6. 多项选择器, eg:  
+    ```
+        $('p,div'); // 把<p>和<div>都选出来
+        $('p.red,p.green'); // 把<p class="red">和<p class="green">都选出来
+    ```
+#### 层级选择器
+1. 层级选择器`$('ancestor descendant')`
+2. 子选择器`$(`parent>child`)`, 限定层级关系必须是父子关系
+3. 过滤器`:`, eg:  
+    ```
+        $('ul.lang li'); // 选出JavaScript、Python和Lua 3个节点
+
+        $('ul.lang li:first-child'); // 仅选出JavaScript
+        $('ul.lang li:last-child'); // 仅选出Lua
+        $('ul.lang li:nth-child(2)'); // 选出第N个元素，N从1开始
+        $('ul.lang li:nth-child(even)'); // 选出序号为偶数的元素
+        $('ul.lang li:nth-child(odd)'); // 选出序号为奇数的元素
+    ```
+4. 表单相关:  
+    - `:input`：可以选择`<input>`，`<textarea>`，`<select>`和`<button>`；
+    - `:file`：可以选择`<input type="file">`，和`input[type=file]`一样；
+    - `:checkbox`：可以选择复选框，和`input[type=checkbox]`一样；
+    - `:radio`：可以选择单选框，和`input[type=radio]`一样；
+    - `:focus`：可以选择当前输入焦点的元素，例如把光标放到一个`<input>`上，用`$('input:focus')`就可以选出；
+    - `:checked`：选择当前勾上的单选框和复选框，用这个选择器可以立刻获得用户选择的项目，如`$('input[type=radio]:checked')`；
+    - `:enabled`：可以选择可以正常输入的`<input>`、`<select>`
+    等，也就是没有灰掉的输入；
+    - `:disabled`：和`:enabled`正好相反，选择那些不能输入的。
+#### *!*查找和过滤
+1. **常见**在某个节点的所有子节点中查找，使用`find()`方法, eg:  
+    ```
+        var ul = $('ul.lang'); // 获得<ul>
+        var dy = ul.find('.dy'); // 获得JavaScript, Python, Scheme
+        var swf = ul.find('#swift'); // 获得Swift
+        var hsk = ul.find('[name=haskell]'); // 获得Haskell
+    ```
+2. 要从当前节点开始向上查找，使用`parent()`方法
+3. - `filter()`方法可以过滤掉不符合选择器条件的节点
+    - 传入一个函数，要特别注意函数内部的`this`被绑定为DOM对象，不是jQuery对象, eg:
+        ```
+            var langs = $('ul.lang li'); // 拿到JavaScript, Python, Swift, Scheme和Haskell
+            langs.filter(function () {
+                return this.innerHTML.indexOf('S') === 0; // 返回S开头的节点
+            }); // 拿到Swift, Scheme
+        ```
+4. `map()`方法把一个jQuery对象包含的若干DOM节点转化为其他对象, eg:  
+    ```
+        var langs = $('ul.lang li'); // 拿到JavaScript, Python, Swift, Scheme和Haskell
+        var arr = langs.map(function () {
+            return this.innerHTML;
+        }).get(); // 用get()拿到包含string的Array：['JavaScript', 'Python', 'Swift', 'Scheme', 'Haskell']
+    ```
+5. `first()`, `last()`, `slice()`
+### 操作DOM
+1. `text()`,`html()`获取节点的文本和原始HTML文本, eg:  
+    ```
+        $('#test-ul li[name=book]').text(); // 'Java & JavaScript'
+        $('#test-ul li[name=book]').html(); // 'Java &amp; JavaScript'
+    ```
+2. 一个JQuery对象可以包含0个或任意个DOM对象, 会作用在对应的每个DOM节点上
+3. JQuery对象有批量操作的特点, 要高亮显示动态语言，调用jQuery对象的`css('name', 'value')`方法, `css()`方法将作用于DOM节点的`style`属性, 具有最高优先级
+4. 修改`class`属性, `hasClass()`, `addClass()`, `removeClass()`
+5. JQuery使用`show()`和`hide()`来显示和隐藏DOM
+6. `width()`, `height()`获取DOM信息
+7. `attr()`, `removeAttr()`操作DOM节点的属性
+8. `prop()`与`attr()`类似
+9. `val()`获取和设置对应的`value`属性(操作表单)
+10. 添加DOM节点,试图`html()`或`append()`, `append()`添加DOM到最后, `prepend()`添加到最前
+11. 将DOM添加到指定位置使用`after()`或`before()`, 先定位DOM再添加
+12. 删除节点用`remove()`
+### 事件
+1. `on`方法用来绑定一个事件, 需要传入事件名称和对应的处理函数
+2. `click()`, eg:  
+    ```
+        a.click(function () {
+            alert('Hello!');
+        });
+    ```
+3. 鼠标事件:
+    - `click`
+    - `dblclick`
+    - `mouseenter`
+    - `mousemove`
+    - `hover`
+4. 键盘事件, 近作用在当前焦点的DOM上, 通常是`<input>`和`<textarea>`:  
+    - keydown: 键盘按下时
+    - keyup: 键盘松开时
+    - keypress: 按一次键
+5. 其他事件:  
+    - focus: 当DOM获得焦点时触发
+    - blur: 当DOM失去焦点时触发
+    - change: 当`<input>`, `<select>`或`<textarea>`内容改变时触发
+    - submit: 当`<form>`提交时触发
+    - ready: 当页面被载入并且DOM树完成初始化后触发(仅作用于`document`对象, 只触发一次, 非常适合用来写其他初始化代码), eg:  
+    ```
+        <script>
+            $(document).on('ready', function () {
+                $('#testForm).on('submit', function () {
+                    alert('submit!');
+                });
+            });
+        </script>
+    ```
+    代码可以简化为
+    ```
+        $(document).ready(function () {
+            // on('submit', function)也可以简化:
+            $('#testForm).submit(function () {
+                alert('submit!');
+            });
+        });
+    ```
+    一般写为:
+    ```
+        $(function () {
+            // init...
+        });
+    ```
+6. 重复绑定事件处理函数, 会依次执行
+7. 事件函数: 所有事件都会传入`Event`对象作为参数, 可以从`Event`对象上获取到更多的信息
+8. 取消绑定: 一个已绑定的时间可以解除绑定, 通过`off('click', function)`实现
+9. 事件触发条件: `input.change()`相当于`input.trigger('change')`
+10. 浏览器安全限制: 有些JS代码只有在用户触发下才能执行
+### 动画
+1. 直接以无参形式调用`show()`和`hide()`便可显示和隐藏DOM元素(从左上角逐渐展开或收缩), 只要传入一个事件参数便成了动画(时间以毫秒为单位), 也可以使用`'slow'`, `'fast'`这些字符串, `toggle()`可根据当前状态决定是`show()`还是`hide()`
+2. `slideUp()`和`slideDown()`在垂直方向逐渐展开或收缩, `slideToggle()`根据元素是否可见来决定下一步动作
+3. `fadeIn()`和`fadeOut()`淡入淡出, `fadeToggle()`根据元素是否可见来决定下一步动作
+4. `animate()`可以实现任意动画效果
+5. JQuery可以串行执行, `delay()`可以实现暂停
+### AJAX
+1. `ajax(url, settings)`需要接收一个URL和一个可选的`settings`对象, 常用选项:
+    - async: 是否异步执行AJAX请求, 默认为`true`, **不要指定为`false`**
+    - method: 缺省为`'GET'`
+    - contentType: 发送POST请求的格式, 默认值为`application/x-www-form-urlencoded; charset=UTF-8`, 也可以指定为`text/plain`, `application/json`
+    - data: 发送到数据, 可以是字符串, 数组或object
+    - headers: 发送的额外的HTTP头, 必须是一个object
+    - dataType: 接收到数据格式, 可以指定为`html`, `xml`, `json`, `text`等, 缺省情况下根据响应的`Content-Type`猜测
+2. 常见的GET请求, 提供`get()`方法, 第一个参数为URL, 第二个为object
+3. `post()`与`get()`类似, 但第二个参数默认被序列化为`application/x-www-form-urlencoded`
+4. `getJSON()`来快速通过GET获取一个JSON对象
+5. 安全限制
+### 扩展
+1. 给JQuery对象绑定一个新方法是通过`$.fn`对象实现的, eg(`highlight()`):  
+    ```
+        $.fn.highlight1 = function () {
+            // this已绑定为当前jQuery对象:
+            this.css('backgroundColor', '#fffceb').css('color', '#d85030');
+            return this;
+        }
+    ```
+2. `highlight2()`让用户把自己的参数用对象传进去, eg:  
+    ```
+        $.fn.highlight2 = function (options) {
+            // 要考虑到各种情况:
+            // options为undefined
+            // options只有部分key
+            var bgcolor = options && options.backgroundColor || '#fffceb';
+            var color = options && options.color || '#d85030';
+            this.css('backgroundColor', bgcolor).css('color', color);
+            return this;
+        }
+    ```
+3. **编写JQuery插件原则**:
+    - 给`$.fn`绑定函数, 实现插件的代码逻辑
+    - 插件函数最后要`return this;`以支持链式调用
+    - 插件函数要有默认值, 绑定在`$.fn.<pluginName>.defaults`上
+    - 用户在调用时可以传入设定值以便覆盖默认值
+4. 针对特定元素的扩展, 使用`filter()`来过滤, eg:  
+    ```
+        $.fn.external = function () {
+            // return返回的each()返回结果，支持链式调用:
+            return this.filter('a').each(function () {
+                // 注意: each()内部的回调函数的this绑定为DOM本身!
+                var a = $(this);
+                var url = a.attr('href');
+                if (url && (url.indexOf('http://')===0 || url.indexOf('https://')===0)) {
+                    a.attr('href', '#0')
+                    .removeAttr('target')
+                    .append(' <i class="uk-icon-external-link"></i>')
+                    .click(function () {
+                        if(confirm('你确定要前往' + url + '？')) {
+                            window.open(url);
+                        }
+                    });
+                }
+            });
+        }
+    ```
+    
